@@ -15,6 +15,18 @@ export const boardService = {
     return data || [];
   },
 
+  async getBoard(supabase: SupabaseClient, boardId: string): Promise<Board> {
+    const { data, error } = await supabase
+      .from('Boards')
+      .select('*')
+      .eq('id', boardId)
+      .single();
+
+    if (error) throw error;
+
+    return data;
+  },
+
   async createBoard(
     supabase: SupabaseClient,
     board: Omit<Board, 'id' | 'created_at' | 'updated_at'>
@@ -33,6 +45,21 @@ export const boardService = {
 
 // handles the crud for columns in supabase
 export const columnService = {
+  async getColumns(
+    supabase: SupabaseClient,
+    boardId: string
+  ): Promise<Column[]> {
+    const { data, error } = await supabase
+      .from('Status Columns')
+      .select('*')
+      .eq('board_id', boardId)
+      .order('sort_order', { ascending: true });
+
+    if (error) throw error;
+
+    return data || [];
+  },
+
   async createColumnn(
     supabase: SupabaseClient,
     column: Omit<Column, 'id' | 'created_at'>
@@ -51,6 +78,7 @@ export const columnService = {
 
 // handles multi service crud
 export const boardDataService = {
+  // creates a board with the 4 generic columns
   async createBoardWithDefaultColumns(
     supabase: SupabaseClient,
     boardData: {
@@ -85,5 +113,20 @@ export const boardDataService = {
     );
 
     return board;
+  },
+
+  // gets the board by id and its columns
+  async getBoardWithColumns(supabase: SupabaseClient, boardId: string) {
+    const [board, columns] = await Promise.all([
+      boardService.getBoard(supabase, boardId),
+      columnService.getColumns(supabase, boardId),
+    ]);
+
+    if (!board) throw new Error('Board not found!');
+
+    return {
+      board,
+      columns,
+    };
   },
 };
