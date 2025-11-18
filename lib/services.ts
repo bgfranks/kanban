@@ -41,6 +41,23 @@ export const boardService = {
 
     return data;
   },
+
+  async updateBoard(
+    supabase: SupabaseClient,
+    boardId: string,
+    updates: Partial<Board>
+  ): Promise<Board> {
+    const { data, error } = await supabase
+      .from('Boards')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', boardId)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return data;
+  },
 };
 
 // handles the crud for columns in supabase
