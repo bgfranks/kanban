@@ -14,7 +14,6 @@ import { Input } from '@/components/ui/input';
 import { useBoards } from '@/lib/hooks/useBoards';
 import { useUser } from '@clerk/nextjs';
 import {
-  Car,
   FilterIcon,
   Grid3x2Icon,
   ListIcon,
