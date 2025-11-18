@@ -85,9 +85,24 @@ export function useSingleBoard(boardId: string) {
       setBoard(data.board);
       setColumns(data.columns);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load boards.');
+      setError(err instanceof Error ? err.message : 'Failed to load board.');
     } finally {
       setLoading(false);
+    }
+  }
+
+  // update a single board
+  async function updateBoard(boardId: string, udpates: Partial<Board>) {
+    try {
+      const updatedBoard = await boardService.updateBoard(
+        supabase!,
+        boardId,
+        udpates
+      );
+      setBoard(updatedBoard);
+      return updatedBoard;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update board.');
     }
   }
 
@@ -96,5 +111,6 @@ export function useSingleBoard(boardId: string) {
     columns,
     loading,
     error,
+    updateBoard,
   };
 }
