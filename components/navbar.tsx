@@ -4,19 +4,28 @@ import { SignInButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs';
 import {
   ArrowLeft,
   ArrowRightIcon,
+  Filter,
   MoreHorizontalIcon,
   Trello,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Badge } from './ui/badge';
 
 interface Props {
   boardTitle?: string;
   onEditBoard?: () => void;
+  onFilterClick?: () => void;
+  filterCount?: number;
 }
 
-export default function Navbar({ boardTitle, onEditBoard }: Props) {
+export default function Navbar({
+  boardTitle,
+  onEditBoard,
+  onFilterClick,
+  filterCount = 0,
+}: Props) {
   const { isSignedIn, user } = useUser();
   const pathname = usePathname();
 
@@ -73,6 +82,32 @@ export default function Navbar({ boardTitle, onEditBoard }: Props) {
                     </Button>
                   )}
                 </div>
+              </div>
+            </div>
+            <div className='flex items-center space-x-2 sm:space-x-4 shrink-0'>
+              {onFilterClick && (
+                <Button
+                  variant='outline'
+                  size='sm'
+                  className={`text-xs sm:text-sm ${
+                    filterCount > 0 ? 'bg-blue-100 border-blue-200' : ''
+                  }`}
+                  onClick={onFilterClick}
+                >
+                  <Filter className='h-3 w-3 sm:h-4 sm:w-4 mr-1' />
+                  <span className='hidden sm:inline'>Filter</span>
+                  {filterCount > 0 && (
+                    <Badge
+                      variant='secondary'
+                      className='text-xs ml-1 bg-blue-100 border-blue-200'
+                    >
+                      {filterCount}
+                    </Badge>
+                  )}
+                </Button>
+              )}
+              <div className='flex items-center space-x-2 sm:space-x-4'>
+                <UserButton />
               </div>
             </div>
           </div>

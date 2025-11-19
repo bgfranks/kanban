@@ -12,3 +12,5 @@ export const colors = [
   'bg-cyan-500',
   'bg-emerald-500',
 ];
+
+export const priorities = ['low', 'medium', 'high'];

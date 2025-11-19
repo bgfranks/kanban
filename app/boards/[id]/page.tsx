@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { colors } from '@/lib/colors';
+import { colors, priorities } from '@/lib/data';
 import { useSingleBoard } from '@/lib/hooks/useBoards';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
@@ -22,6 +22,7 @@ export default function BoardPage() {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newColor, setNewColor] = useState('');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const handleUpdateBoard = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,7 +47,12 @@ export default function BoardPage() {
           setNewColor(board?.color ?? '');
           setIsEditingTitle(true);
         }}
+        onFilterClick={() => {
+          setIsFilterOpen(true);
+        }}
+        filterCount={2}
       />
+      {/* Edit Board */}
       <Dialog open={isEditingTitle} onOpenChange={setIsEditingTitle}>
         <DialogContent className='w-[95vw] max-w-[425px] mx-auto'>
           <DialogHeader>
@@ -66,9 +72,9 @@ export default function BoardPage() {
             <div className='space-y-2'>
               <Label htmlFor='boardColor'>Board Color</Label>
               <div className='grid grid-cols-4 sm:grid-cols-6 gap-2'>
-                {colors.map((color) => (
+                {colors.map((color, key) => (
                   <button
-                    key={color}
+                    key={key}
                     type='button'
                     className={`w-8 h-8 rounded-full ${color} ${
                       color === newColor
@@ -91,6 +97,44 @@ export default function BoardPage() {
               <Button type='submit'>Save Changes</Button>
             </div>
           </form>
+        </DialogContent>
+      </Dialog>
+      {/* Filter */}
+      <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+        <DialogContent className='w-[95vw] max-w-[425px] mx-auto'>
+          <DialogHeader>
+            <DialogTitle>Filter Tasks</DialogTitle>
+            <p className='text-sm text-gray-600'>
+              Filter tasks by priority, assignee, or due date
+            </p>
+          </DialogHeader>
+          <div className='space-y-4'>
+            <div className='space-y-2'>
+              <Label>Priority</Label>
+              <div className='flex flex-wrap gap-2'>
+                {priorities.map((priority, key) => (
+                  <Button variant={`outline`} key={key} size='sm'>
+                    {priority.charAt(0).toUpperCase() + priority.slice(1)}
+                  </Button>
+                ))}
+              </div>
+            </div>
+            <div className='space-y-2'>
+              <Label>Assignee</Label>
+            </div>
+            <div className='space-y-2'>
+              <Label>Due Date</Label>
+              <Input type='date' />
+            </div>
+            <div className='flex justify-end gap-2 pt-4'>
+              <Button type='button' variant='outline' className=''>
+                Clear Filters
+              </Button>
+              <Button type='button' onClick={() => setIsFilterOpen(false)}>
+                Apply Filters
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
