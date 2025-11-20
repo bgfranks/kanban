@@ -1,5 +1,6 @@
 'use client';
 
+import Column from '@/components/Column';
 import Navbar from '@/components/navbar';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,7 +28,7 @@ import { useState } from 'react';
 
 export default function BoardPage() {
   const { id } = useParams<{ id: string }>();
-  const { board, updateBoard, columns } = useSingleBoard(id);
+  const { board, updateBoard, columns, createRealTask } = useSingleBoard(id);
 
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [newTitle, setNewTitle] = useState('');
@@ -46,6 +47,45 @@ export default function BoardPage() {
       });
       setIsEditingTitle(false);
     } catch {}
+  };
+
+  const createTask = async (taskData: {
+    title: string;
+    description?: string;
+    assignee?: string;
+    dueDate?: string;
+    priority: 'low' | 'medium' | 'high';
+  }) => {
+    const targetColumn = columns[0];
+
+    if (!targetColumn) throw new Error('No column available to add task');
+
+    await createRealTask(targetColumn.id, taskData);
+  };
+
+  const handleCreateTask = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const taskData = {
+      title: formData.get('title') as string,
+      desciption: (formData.get('description') as string) || undefined,
+      assignee: (formData.get('assignee') as string) || undefined,
+      dueDate: (formData.get('dueDate') as string) || undefined,
+      priority:
+        (formData.get('priority') as 'low' | 'medium' | 'high') || 'medium',
+    };
+
+    if (taskData.title.trim()) {
+      await createTask(taskData);
+
+      // this is due to using a dialog trigger for the new task form
+      // since we cannot close with setting state, this graps the data-state:open
+      const trigger = document.querySelector(
+        '[data-state="open"]'
+      ) as HTMLElement;
+      if (trigger) trigger.click();
+    }
   };
 
   return (
@@ -173,7 +213,7 @@ export default function BoardPage() {
                   Add a new task to the board
                 </p>
               </DialogHeader>
-              <form action='' className='space-y-4'>
+              <form action='' onSubmit={handleCreateTask} className='space-y-4'>
                 <div className='space-y-2'>
                   <Label>Title *</Label>
                   <Input
@@ -225,6 +265,24 @@ export default function BoardPage() {
               </form>
             </DialogContent>
           </Dialog>
+        </div>
+
+        {/* Board Columns */}
+        <div className='flex flex-col pt-2 rounded-lg lg:h-300 lg:flex-row lg:space-x-6 lg:overflow-x-auto lg:pb-6 lg:px-2 lg:-mx-2 lg:[&::-webkit-scrollbar]:h-2 lg:[&::-webkit-scrollbar-track]:bg-gray-100 lg:[&::-webkit-scrollbar-thumb]:bg-gray-300 lg:[&::-webkit-scrollbar-thumb]:rounded-full space-y-4 lg:space-y-0'>
+          {columns.map((column, key) => (
+            <Column
+              key={key}
+              column={column}
+              onCreateTask={createTask}
+              onEditColumn={() => {}}
+            >
+              <div className='space-y-3'>
+                {column.tasks.map((task, key) => (
+                  <div key={key}>{task.title}</div>
+                ))}
+              </div>
+            </Column>
+          ))}
         </div>
       </main>
     </div>
