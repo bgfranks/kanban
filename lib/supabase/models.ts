@@ -20,11 +20,11 @@ export interface Column {
 export interface Task {
   id: string;
   title: string;
-  dscription: string | null;
+  description: string | null;
   assignee: string | null;
   due_date: string | null;
   priority: 'low' | 'medium' | 'high';
-  sort_oder: number;
+  sort_order: number;
   column_id: string;
   created_at: string;
   updated_at: string;
