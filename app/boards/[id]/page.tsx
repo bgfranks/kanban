@@ -97,7 +97,7 @@ export default function BoardPage() {
   };
 
   return (
-    <div className={`min-h-screen ${board?.color} lg:bg-gray-50`}>
+    <div className={`min-h-screen ${board?.color}`}>
       <Navbar
         boardTitle={board?.title}
         onEditBoard={() => {
@@ -197,9 +197,7 @@ export default function BoardPage() {
       </Dialog>
 
       {/* Board Content */}
-      <main
-        className={`container mx-auto px-2 my-2 rounded-lg sm:px-4 py-4 sm:py-6 ${board?.color}`}
-      >
+      <main className={` mx-auto px-5 lg:px-10 sm:px-4 py-4 sm:py-6`}>
         {/* stats */}
         <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0'>
           <div className='flex flex-wrap items-center gap-4 sm:gap-6'>
