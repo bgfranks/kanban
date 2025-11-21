@@ -97,7 +97,7 @@ export default function BoardPage() {
   };
 
   return (
-    <div className='min-h-screen bg-gray-50'>
+    <div className={`min-h-screen ${board?.color} lg:bg-gray-50`}>
       <Navbar
         boardTitle={board?.title}
         onEditBoard={() => {
@@ -197,11 +197,13 @@ export default function BoardPage() {
       </Dialog>
 
       {/* Board Content */}
-      <main className='container mx-auto px-2 sm:px-4 py-4 sm:py-6'>
+      <main
+        className={`container mx-auto px-2 my-2 rounded-lg sm:px-4 py-4 sm:py-6 ${board?.color}`}
+      >
         {/* stats */}
         <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0'>
           <div className='flex flex-wrap items-center gap-4 sm:gap-6'>
-            <div className='text-sm text-gray-600'>
+            <div className='text-sm text-gray-600 bg-gray-50 rounded-sm px-2 '>
               <span className='font-medium'>Total Tasks: </span>
               {columns.reduce((sum, col) => sum + col.tasks.length, 0)}
             </div>
@@ -276,7 +278,7 @@ export default function BoardPage() {
         </div>
 
         {/* Board Columns */}
-        <div className='flex flex-col pt-2 rounded-lg lg:h-300 lg:flex-row lg:space-x-6 lg:overflow-x-auto lg:overflow-y-auto lg:pb-6 lg:px-2 lg:-mx-2 lg:[&::-webkit-scrollbar]:h-2 lg:[&::-webkit-scrollbar]:w-2 lg:[&::-webkit-scrollbar-track]:bg-gray-100 lg:[&::-webkit-scrollbar-thumb]:bg-gray-300 lg:[&::-webkit-scrollbar-thumb]:rounded-full space-y-4 lg:space-y-0'>
+        <div className='flex flex-col pt-2 rounded-lg lg:h-300 lg:flex-row lg:space-x-6 lg:overflow-x-auto lg:overflow-y-auto lg:pb-6 lg:px-2 lg:-mx-2 lg:[&::-webkit-scrollbar]:h-2 lg:[&::-webkit-scrollbar]:w-2 lg:[&::-webkit-scrollbar-track]:bg-gray-100 lg:[&::-webkit-scrollbar-thumb]:bg-gray-300 lg:[&::-webkit-scrollbar-thumb]:rounded-full space-y-4 lg:space-y-0 px-4'>
           {columns.map((column, key) => (
             <Column
               key={key}
