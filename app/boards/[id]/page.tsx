@@ -2,6 +2,7 @@
 
 import Column from '@/components/Column';
 import Navbar from '@/components/navbar';
+import Task from '@/components/Task';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -46,7 +47,9 @@ export default function BoardPage() {
         color: newColor || board.color,
       });
       setIsEditingTitle(false);
-    } catch {}
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const createTask = async (taskData: {
@@ -60,6 +63,11 @@ export default function BoardPage() {
 
     if (!targetColumn) throw new Error('No column available to add task');
 
+    console.log(taskData.description);
+    console.log(taskData.assignee);
+    console.log(taskData.dueDate);
+    console.log(taskData.priority);
+
     await createRealTask(targetColumn.id, taskData);
   };
 
@@ -69,7 +77,7 @@ export default function BoardPage() {
     const formData = new FormData(e.currentTarget);
     const taskData = {
       title: formData.get('title') as string,
-      desciption: (formData.get('description') as string) || undefined,
+      description: (formData.get('description') as string) || undefined,
       assignee: (formData.get('assignee') as string) || undefined,
       dueDate: (formData.get('dueDate') as string) || undefined,
       priority:
@@ -268,7 +276,7 @@ export default function BoardPage() {
         </div>
 
         {/* Board Columns */}
-        <div className='flex flex-col pt-2 rounded-lg lg:h-300 lg:flex-row lg:space-x-6 lg:overflow-x-auto lg:pb-6 lg:px-2 lg:-mx-2 lg:[&::-webkit-scrollbar]:h-2 lg:[&::-webkit-scrollbar-track]:bg-gray-100 lg:[&::-webkit-scrollbar-thumb]:bg-gray-300 lg:[&::-webkit-scrollbar-thumb]:rounded-full space-y-4 lg:space-y-0'>
+        <div className='flex flex-col pt-2 rounded-lg lg:h-300 lg:flex-row lg:space-x-6 lg:overflow-x-auto lg:overflow-y-auto lg:pb-6 lg:px-2 lg:-mx-2 lg:[&::-webkit-scrollbar]:h-2 lg:[&::-webkit-scrollbar]:w-2 lg:[&::-webkit-scrollbar-track]:bg-gray-100 lg:[&::-webkit-scrollbar-thumb]:bg-gray-300 lg:[&::-webkit-scrollbar-thumb]:rounded-full space-y-4 lg:space-y-0'>
           {columns.map((column, key) => (
             <Column
               key={key}
@@ -278,7 +286,7 @@ export default function BoardPage() {
             >
               <div className='space-y-3'>
                 {column.tasks.map((task, key) => (
-                  <div key={key}>{task.title}</div>
+                  <Task key={key} task={task} />
                 ))}
               </div>
             </Column>
