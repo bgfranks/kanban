@@ -35,7 +35,7 @@ export default function Navbar({
   if (isDashboardPage) {
     return (
       <header className='border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50'>
-        <div className='container mx-auto px-4 py-3 sm:py-4 flex items-center justify-between'>
+        <div className='mx-auto px-5 lg:px-10 py-3 sm:py-4 flex items-center justify-between'>
           <div className='flex items-center space-x-2'>
             <Trello className='h-6 w-6 sm:h-8 sm:w-8 text-blue-600' />
             <span className='text-xl sm:text-2xl font-bold text-gray-900'>
@@ -53,7 +53,7 @@ export default function Navbar({
   if (isBoardPage) {
     return (
       <header className='bg-white border-b sticky top-0 z-50'>
-        <div className='container mx-auto px-4 py-3 sm:py-4'>
+        <div className='px-5 lg:px-10 mx-auto py-3 sm:py-4'>
           <div className='flex justify-between items-center'>
             <div className='flex items-center space-x-2 sm:space-x-4'>
               <Link
