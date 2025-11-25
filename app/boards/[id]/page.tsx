@@ -36,6 +36,13 @@ export default function BoardPage() {
   const [newColor, setNewColor] = useState('');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
+  const [isEditingTask, setIsEditingTask] = useState(false);
+  const [newTaskTitle, setNewTaskTitle] = useState('');
+  const [newTaskDescription, setNewTaskDescription] = useState('');
+  const [newTaskAssignee, setNewTaskAssignee] = useState('');
+  const [newTaskDueDate, setNewTaskDueDate] = useState('');
+  const [newTaskPriority, setNewTaskPriority] = useState('');
+
   const handleUpdateBoard = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -63,11 +70,6 @@ export default function BoardPage() {
 
     if (!targetColumn) throw new Error('No column available to add task');
 
-    console.log(taskData.description);
-    console.log(taskData.assignee);
-    console.log(taskData.dueDate);
-    console.log(taskData.priority);
-
     await createRealTask(targetColumn.id, taskData);
   };
 
@@ -94,6 +96,17 @@ export default function BoardPage() {
       ) as HTMLElement;
       if (trigger) trigger.click();
     }
+  };
+
+  const handleUpdateTask = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log(newTaskTitle);
+    console.log(newTaskDescription);
+    console.log(newTaskAssignee);
+    console.log(newTaskPriority);
+    console.log(newTaskDueDate);
+
+    setIsEditingTask(false);
   };
 
   return (
@@ -273,6 +286,91 @@ export default function BoardPage() {
               </form>
             </DialogContent>
           </Dialog>
+
+          {/* Edit Task */}
+          <Dialog open={isEditingTask} onOpenChange={setIsEditingTask}>
+            <DialogContent className='w-[95vw] max-w-[425px] mx-auto'>
+              <DialogHeader>
+                <DialogTitle>Edit Task</DialogTitle>
+                <p className='text-sm text-gray-600'>
+                  Edit the current information on the task
+                </p>
+              </DialogHeader>
+              <form action='' onSubmit={handleUpdateTask} className='space-y-4'>
+                <div className='space-y-2'>
+                  <Label>Title *</Label>
+                  <Input
+                    id='title'
+                    name='title'
+                    placeholder='Enter task title'
+                    value={newTaskTitle}
+                    onChange={(e) => setNewTaskTitle(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className='space-y-2'>
+                  <Label>Description</Label>
+                  <Textarea
+                    id='description'
+                    name='description'
+                    placeholder='Enter task description'
+                    value={newTaskDescription}
+                    onChange={(e) => setNewTaskDescription(e.target.value)}
+                    rows={3}
+                  />
+                </div>
+                <div className='space-y-2'>
+                  <Label>Assignee</Label>
+                  <Input
+                    id='assignee'
+                    name='assignee'
+                    placeholder='Who should be assigned to this task?'
+                    value={newTaskAssignee}
+                    onChange={(e) => setNewTaskAssignee(e.target.value)}
+                  />
+                </div>
+                <div className='space-y-2'>
+                  <Label>Priority</Label>
+                  <Select
+                    name='priority'
+                    defaultValue={newTaskPriority}
+                    onValueChange={(e) => setNewTaskPriority(e)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent defaultValue={newTaskPriority}>
+                      {priorities.map((priority, key) => (
+                        <SelectItem key={key} value={priority}>
+                          {priority.charAt(0).toUpperCase() + priority.slice(1)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className='space-y-2'>
+                  <Label>Due Date</Label>
+                  <Input
+                    type='date'
+                    id='dueDate'
+                    name='dueDate'
+                    value={newTaskDueDate}
+                    onChange={(e) => setNewTaskDueDate(e.target.value)}
+                  />
+                </div>
+                <div className='flex justify-end pt-4 space-x-2'>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    onClick={() => setIsEditingTask(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button type='submit'>Update Task</Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* Board Columns */}
@@ -286,7 +384,18 @@ export default function BoardPage() {
             >
               <div className='space-y-3'>
                 {column.tasks.map((task, key) => (
-                  <Task key={key} task={task} />
+                  <Task
+                    key={key}
+                    task={task}
+                    onEditTask={() => {
+                      setIsEditingTask(true);
+                      setNewTaskTitle(task.title || '');
+                      setNewTaskDescription(task.description || '');
+                      setNewTaskAssignee(task.assignee || '');
+                      setNewTaskDueDate(task.due_date || '');
+                      setNewTaskPriority(task.priority || 'medium');
+                    }}
+                  />
                 ))}
               </div>
             </Column>
