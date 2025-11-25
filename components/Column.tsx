@@ -6,7 +6,6 @@ import { MoreHorizontalIcon } from 'lucide-react';
 export default function Column({
   column,
   children,
-  onCreateTask,
   onEditColumn,
 }: {
   column: ColumnWithTasks;

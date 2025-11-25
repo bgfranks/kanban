@@ -129,6 +129,23 @@ export const taskService = {
 
     return data;
   },
+
+  async updateTask(
+    supabase: SupabaseClient,
+    taskId: string,
+    updates: Partial<Task>
+  ): Promise<Task> {
+    const { data, error } = await supabase
+      .from('Tasks')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', taskId)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return data;
+  },
 };
 
 // handles multi service crud
