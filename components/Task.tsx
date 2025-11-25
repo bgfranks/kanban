@@ -3,7 +3,12 @@ import { Card, CardContent } from './ui/card';
 import { Calendar, MoreHorizontalIcon, UserIcon } from 'lucide-react';
 import { Button } from './ui/button';
 
-export default function Task({ task }: { task: Task }) {
+interface props {
+  task: Task;
+  onEditTask: () => void;
+}
+
+export default function Task({ task, onEditTask }: props) {
   const getPriorityColor = (priority: 'low' | 'medium' | 'high'): string => {
     switch (priority) {
       case 'high':
@@ -33,7 +38,12 @@ export default function Task({ task }: { task: Task }) {
                 </h4>
               </div>
 
-              <Button variant='ghost' size='sm' className='shrink-0'>
+              <Button
+                variant='ghost'
+                size='sm'
+                className='shrink-0'
+                onClick={onEditTask}
+              >
                 <MoreHorizontalIcon />
               </Button>
             </div>
